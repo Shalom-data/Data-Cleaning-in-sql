@@ -14,7 +14,6 @@ This project involves transforming and cleaning a Nashville housing dataset to p
 - **Transform SoldAsVacant Values:** Replace 'Y' and 'N' with 'Yes' and 'No'.
 - **Remove Duplicate Records:** Identify and delete duplicate rows.
 - **Extract Day, Month, and Year:** Break down the date into day, month, and year for further analysis.
-- Remove Outliers in SalePrice
 - Standardize Text Formats
 - Add Price per Square Foot Metric
 - **Drop Unused Columns:** Remove unnecessary columns as per stakeholder instructions.
@@ -120,14 +119,6 @@ SET Sale_Day = DAY(New_date),
     Sale_Year = YEAR(New_date);
 ```
 
-8. #### Remove Outliers in SalePrice
-- Filter out extreme values in SalePrice to avoid skewing the analysis. Here, assume that prices over $1,000,000 are outliers and remove them.
-
-```sql
-DELETE FROM Housing
-WHERE SalePrice > 1000000;
-```
-
 
 9. #### Standardize Text Formats
 - Ensure consistency in casing by converting address columns to title case.
@@ -135,22 +126,23 @@ WHERE SalePrice > 1000000;
 ```sql
 UPDATE Housing
 SET Property_Address = INITCAP(Property_Address),
+    Property_State = INITCAP(Property_State),
     Property_City = INITCAP(Property_City),
     Owner_Address = INITCAP(Owner_Address),
+    Owner_State = INITCAP(Owner_State),
     Owner_City = INITCAP(Owner_City);
 ```
 
 
 10. #### Add Price per Square Foot Metric
-- Create a new column for Price_per_SqFt by dividing SalePrice by PropertySqFt. This allows for a standardized price comparison between properties.
+- Enhance the housing dataset by introducing a new calculated column, Price_per_Acre, which allows for property size-adjusted price comparisons.
 
 ```sql
 ALTER TABLE Housing
-ADD Price_per_SqFt DECIMAL(10, 2);
+ADD Price_per_Acre DECIMAL(10, 2);
 
 UPDATE Housing
-SET Price_per_SqFt = SalePrice / PropertySqFt
-WHERE PropertySqFt > 0;
+SET Price_per_Acre = SalePrice / NULLIF(Acreage, 0);
 ```
 
 11. #### Drop Unused Columns
