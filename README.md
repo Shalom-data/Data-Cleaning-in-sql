@@ -152,3 +152,6 @@ SET Price_per_Acre = SalePrice / NULLIF(Acreage, 0);
 ALTER TABLE Housing
 DROP COLUMN PropertyAddress, LegalReference, OwnerAddress, TaxDistrict, SaleDate;
 ```
+
+## Final Dataset
+After completing these data cleaning steps, the Nashville housing dataset is ready for analysis. It now has standardized dates, separated address components, clean values for analysis, and a `Price_per_Acre` column for property comparison.
